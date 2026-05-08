@@ -346,10 +346,53 @@ function MessageBlock({ message }: { message: UIMessage }) {
       .map((p) => (p.type === "text" ? p.text : ""))
       .join("\n")
       .trim();
+    const fileParts = message.parts.filter(
+      (p): p is Extract<typeof p, { type: "file" }> => p.type === "file",
+    );
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium shadow-card">
-          {text}
+        <div className="max-w-[85%] flex flex-col items-end gap-2">
+          {fileParts.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-end">
+              {fileParts.map((f, i) => {
+                const isImage = (f.mediaType || "").startsWith("image/");
+                const name =
+                  ("filename" in f && (f.filename as string)) ||
+                  (isImage ? "image" : "document");
+                return isImage ? (
+                  <img
+                    key={i}
+                    src={f.url}
+                    alt={name}
+                    className="max-h-48 rounded-lg border border-border object-cover"
+                  />
+                ) : (
+                  <a
+                    key={i}
+                    href={f.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-foreground hover:border-primary/40"
+                  >
+                    {isImage ? (
+                      <ImageIcon className="h-4 w-4 text-primary" />
+                    ) : (
+                      <FileText className="h-4 w-4 text-primary" />
+                    )}
+                    <span className="max-w-[200px] truncate">{name}</span>
+                    <span className="text-[10px] text-muted-foreground uppercase">
+                      {(f.mediaType || "file").split("/")[1] || "file"}
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+          {text && (
+            <div className="rounded-2xl rounded-br-sm bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium shadow-card">
+              {text}
+            </div>
+          )}
         </div>
       </div>
     );
