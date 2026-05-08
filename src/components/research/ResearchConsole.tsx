@@ -50,7 +50,10 @@ function MessageText({ text }: { text: string }) {
 
 export function ResearchConsole({ session, onMessagesChange }: Props) {
   const [input, setInput] = useState("");
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachError, setAttachError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const lastSavedRef = useRef<number>(0);
 
   const { messages, sendMessage, status, stop, error } = useChat({
@@ -59,11 +62,9 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
-  // Persist messages whenever they change & stream completes / pauses
   useEffect(() => {
     if (messages.length === 0) return;
     if (status === "streaming" || status === "submitted") {
-      // Throttle saves during streaming
       const now = Date.now();
       if (now - lastSavedRef.current < 1500) return;
       lastSavedRef.current = now;
@@ -78,7 +79,6 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, status]);
 
-  // Focus on session change & stream end
   useEffect(() => {
     if (status === "ready") textareaRef.current?.focus();
   }, [status, session.id]);
@@ -87,13 +87,66 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
     textareaRef.current?.focus();
   }, [session.id]);
 
+  useEffect(() => {
+    return () => {
+      attachments.forEach((a) => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const isBusy = status === "submitted" || status === "streaming";
+
+  const addFiles = (files: FileList | File[]) => {
+    setAttachError(null);
+    const incoming = Array.from(files);
+    const next: Attachment[] = [...attachments];
+    for (const file of incoming) {
+      if (next.length >= MAX_FILES) {
+        setAttachError(`Max ${MAX_FILES} files per message.`);
+        break;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setAttachError(`"${file.name}" exceeds 18 MB limit.`);
+        continue;
+      }
+      const previewUrl = file.type.startsWith("image/")
+        ? URL.createObjectURL(file)
+        : undefined;
+      next.push({
+        id: `${file.name}-${file.size}-${Date.now()}-${Math.random()}`,
+        file,
+        previewUrl,
+      });
+    }
+    setAttachments(next);
+  };
+
+  const removeAttachment = (id: string) => {
+    setAttachments((prev) => {
+      const target = prev.find((a) => a.id === id);
+      if (target?.previewUrl) URL.revokeObjectURL(target.previewUrl);
+      return prev.filter((a) => a.id !== id);
+    });
+  };
 
   const handleSend = (text?: string) => {
     const value = (text ?? input).trim();
-    if (!value || isBusy) return;
-    sendMessage({ text: value });
+    if ((!value && attachments.length === 0) || isBusy) return;
+
+    if (attachments.length > 0) {
+      const dt = new DataTransfer();
+      attachments.forEach((a) => dt.items.add(a.file));
+      sendMessage({
+        text: value || "Please analyze the attached file(s).",
+        files: dt.files,
+      });
+      attachments.forEach((a) => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
+      setAttachments([]);
+    } else {
+      sendMessage({ text: value });
+    }
     setInput("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
