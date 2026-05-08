@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowUp, Square, Sparkles, Loader2 } from "lucide-react";
 import { ToolCallView } from "./ToolCallView";
+import { ThemeToggle } from "./ThemeToggle";
 import type { ResearchSession } from "@/lib/research-storage";
 
 type Props = {
@@ -87,9 +88,12 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
             {session.title}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-          Agent online
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            Agent online
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
