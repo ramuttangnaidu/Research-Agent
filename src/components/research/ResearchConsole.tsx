@@ -199,13 +199,73 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
       {/* Composer */}
       <div className="border-t border-border bg-background/80 backdrop-blur-md px-4 md:px-6 py-4">
         <div className="max-w-3xl mx-auto">
+          {/* Attachment previews */}
+          {attachments.length > 0 && (
+            <div className="mb-2 flex flex-wrap gap-2">
+              {attachments.map((a) => (
+                <div
+                  key={a.id}
+                  className="group relative flex items-center gap-2 rounded-lg border border-border bg-surface pl-1.5 pr-7 py-1.5 text-xs"
+                >
+                  {a.previewUrl ? (
+                    <img
+                      src={a.previewUrl}
+                      alt={a.file.name}
+                      className="h-9 w-9 object-cover rounded-md border border-border"
+                    />
+                  ) : (
+                    <div className="h-9 w-9 rounded-md bg-muted flex items-center justify-center text-primary">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                  )}
+                  <div className="min-w-0 max-w-[160px]">
+                    <div className="truncate font-medium text-foreground">
+                      {a.file.name}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {(a.file.size / 1024).toFixed(0)} KB
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeAttachment(a.id)}
+                    className="absolute top-1 right-1 p-0.5 rounded hover:bg-destructive/20 hover:text-destructive text-muted-foreground transition-colors"
+                    aria-label={`Remove ${a.file.name}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {attachError && (
+            <div className="mb-2 text-xs text-destructive">{attachError}</div>
+          )}
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
             }}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (e.dataTransfer.files?.length) addFiles(e.dataTransfer.files);
+            }}
             className="relative rounded-xl border border-border bg-surface focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-card"
           >
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept={ACCEPT}
+              className="hidden"
+              onChange={(e) => {
+                if (e.target.files?.length) addFiles(e.target.files);
+              }}
+            />
             <textarea
               ref={textareaRef}
               value={input}
@@ -216,21 +276,41 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
                   handleSend();
                 }
               }}
-              placeholder="Ask anything — e.g. ‘Quarterly review of the AI agent infrastructure market’"
+              onPaste={(e) => {
+                const files = Array.from(e.clipboardData.files || []);
+                if (files.length) {
+                  e.preventDefault();
+                  addFiles(files);
+                }
+              }}
+              placeholder="Ask anything, or attach an image / PDF for the agent to analyze…"
               rows={2}
               autoFocus
               className="w-full resize-none bg-transparent px-4 pt-3.5 pb-12 text-sm placeholder:text-muted-foreground focus:outline-none text-foreground max-h-48"
             />
-            <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>
-                <kbd className="font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-[10px]">
-                  Enter
-                </kbd>{" "}
-                to send · <kbd className="font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-[10px]">
-                  Shift+Enter
-                </kbd>{" "}
-                newline
-              </span>
+            <div className="absolute bottom-2 left-2 right-3 flex items-center justify-between text-[11px] text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isBusy || attachments.length >= MAX_FILES}
+                  className="flex items-center justify-center h-8 w-8 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Attach files"
+                  title="Attach images or documents"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </button>
+                <span className="hidden sm:inline">
+                  <kbd className="font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-[10px]">
+                    Enter
+                  </kbd>{" "}
+                  send ·{" "}
+                  <kbd className="font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-[10px]">
+                    Shift+Enter
+                  </kbd>{" "}
+                  newline
+                </span>
+              </div>
               {isBusy ? (
                 <button
                   type="button"
@@ -243,7 +323,7 @@ export function ResearchConsole({ session, onMessagesChange }: Props) {
               ) : (
                 <button
                   type="submit"
-                  disabled={!input.trim()}
+                  disabled={!input.trim() && attachments.length === 0}
                   className="flex items-center justify-center h-8 w-8 rounded-md bg-primary text-primary-foreground hover:bg-primary-glow disabled:opacity-30 disabled:cursor-not-allowed transition-colors glow"
                   aria-label="Send"
                 >
