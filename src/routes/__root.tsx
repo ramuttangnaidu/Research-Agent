@@ -91,6 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { property: "og:title", content: "Insight.agent — Autonomous Research & Insight Agent" },
+      { name: "twitter:title", content: "Insight.agent — Autonomous Research & Insight Agent" },
+      { name: "description", content: "An AI agent that autonomously researches complex queries, plans tasks, and generates structured insights." },
+      { property: "og:description", content: "An AI agent that autonomously researches complex queries, plans tasks, and generates structured insights." },
+      { name: "twitter:description", content: "An AI agent that autonomously researches complex queries, plans tasks, and generates structured insights." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/22ca8e8d-4fe5-43c3-92cf-24e68a669b0c/id-preview-95d21a07--594ad316-0dd7-44a8-84c5-03272e75d185.lovable.app-1778262216013.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/22ca8e8d-4fe5-43c3-92cf-24e68a669b0c/id-preview-95d21a07--594ad316-0dd7-44a8-84c5-03272e75d185.lovable.app-1778262216013.png" },
     ],
     links: [
       {
