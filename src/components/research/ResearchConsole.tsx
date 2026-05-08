@@ -3,10 +3,30 @@ import { DefaultChatTransport, type UIMessage, type ToolUIPart, isToolUIPart } f
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUp, Square, Sparkles, Loader2 } from "lucide-react";
+import {
+  ArrowUp,
+  Square,
+  Sparkles,
+  Loader2,
+  Paperclip,
+  X,
+  FileText,
+  Image as ImageIcon,
+} from "lucide-react";
 import { ToolCallView } from "./ToolCallView";
 import { ThemeToggle } from "./ThemeToggle";
 import type { ResearchSession } from "@/lib/research-storage";
+
+const MAX_FILE_SIZE = 18 * 1024 * 1024; // 18 MB
+const MAX_FILES = 5;
+const ACCEPT =
+  "image/png,image/jpeg,image/webp,image/gif,application/pdf,text/plain,text/markdown,text/csv,application/json";
+
+type Attachment = {
+  id: string;
+  file: File;
+  previewUrl?: string;
+};
 
 type Props = {
   session: ResearchSession;
