@@ -5,6 +5,25 @@
 Not a chatbot. A research analyst that thinks in steps.
 
 ---
+## 🌐 Live Demo
+
+<div align="center">
+
+### ⚡ Try it now — no sign-up required
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-insight--forge--ai-blueviolet?style=for-the-badge&logo=vercel&logoColor=white)](https://insight-forge-ai-45.lovable.app)
+[![Status](https://img.shields.io/badge/Status-Live%20%26%20Active-brightgreen?style=for-the-badge)]()
+[![Platform](https://img.shields.io/badge/Platform-Web-blue?style=for-the-badge&logo=googlechrome&logoColor=white)]()
+
+<br/>
+
+> 🔗 **Production URL:** [`https://insight-forge-ai-45.lovable.app`](https://insight-forge-ai-45.lovable.app)
+>
+> _Deployed and accessible globally — no installation, no configuration, just intelligence at your fingertips._
+
+</div>
+
+
 
 ## ✨ Highlights
 
