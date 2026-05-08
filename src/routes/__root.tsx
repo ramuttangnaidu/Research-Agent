@@ -72,11 +72,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Insight.agent — Autonomous Research & Insight Agent" },
+      {
+        name: "description",
+        content:
+          "An autonomous AI research agent that plans, searches the live web, and synthesizes structured insight reports with citations.",
+      },
+      { name: "author", content: "Insight.agent" },
+      {
+        property: "og:title",
+        content: "Insight.agent — Autonomous Research Agent",
+      },
+      {
+        property: "og:description",
+        content:
+          "Plan, search, synthesize. Production-grade agentic research powered by Gemini and Tavily.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
