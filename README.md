@@ -4,7 +4,7 @@
 
 Not a chatbot. A research analyst that thinks in steps.
 
----
+
 ## 🌐 Live Demo
 
 <div align="center">
