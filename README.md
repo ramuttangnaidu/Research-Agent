@@ -1,4 +1,4 @@
-# Autonomous Research & Insight Agent
+# Autonomous Research & Insight AgentX
 
 > A production-grade agentic AI platform that **plans, searches the live web, reasons across sources, and synthesizes structured insight reports with citations** — built on Gemini, Tavily, and the Vercel AI SDK.
 
