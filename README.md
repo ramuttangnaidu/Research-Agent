@@ -11,7 +11,7 @@ Not a chatbot. A research analyst that thinks in steps.
 
 ### ⚡ Try it now — no sign-up required
 
-[![Live Demo](https://🚀%20Live%20Demo-insight--forge--ai-blueviolet?style=for-the-badge&logo=vercel&logoColor=white)](https://insight-forge-ai-45.lovable.app)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-insight--forge--ai-blueviolet?style=for-the-badge)](https://insight-forge-ai-45.lovable.app)
 [![Status](https://img.shields.io/badge/Status-Live%20%26%20Active-brightgreen?style=for-the-badge)]()
 [![Platform](https://img.shields.io/badge/Platform-Web-blue?style=for-the-badge&logo=googlechrome&logoColor=white)]()
 
